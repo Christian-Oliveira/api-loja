@@ -1,4 +1,4 @@
-from rest_framework import generics, status
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.db.models import ProtectedError
@@ -35,7 +35,7 @@ class ClienteListCreateView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 
-class ClienteDetailView(generics.RetrieveUpdateDestroyAPIView):
+class ClienteDetailView(APIView):
     """
     API para buscar, atualizar e deletar Cliente
     """
