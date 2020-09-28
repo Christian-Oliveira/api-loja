@@ -13,3 +13,11 @@ class FornecedorSerializer(serializers.ModelSerializer):
             'email',
             'endereco'
         ]
+
+    def validate(self, data):
+        cnpj = len(data['cnpj'])
+        if (cnpj < 14):
+            raise serializers.ValidationError({
+                "cnpj": "Certifique-se de que este campo não tenha menos de 14 caracteres."
+            })
+        return data

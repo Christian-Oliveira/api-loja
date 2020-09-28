@@ -1,5 +1,4 @@
-from rest_framework import generics
-from rest_framework import status
+from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.db.models import ProtectedError
@@ -14,9 +13,19 @@ class ClienteListCreateView(APIView):
     Recurso para listar e criar Cliente
     """
     def get(self, request):
-        clientes = Cliente.objects.filter(ativo=True)
+        query = request.GET
+        if (query):
+            clientes = Cliente.objects.filter(
+                nome__istartswith=query.get('nome'), 
+                ativo=True
+            )
+            if not(clientes):
+                return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            clientes = Cliente.objects.filter(ativo=True)
+
         serializer = ClienteSerializer(clientes, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
         serializer = ClienteSerializer(data=request.data)
@@ -40,7 +49,7 @@ class ClienteDetailView(generics.RetrieveUpdateDestroyAPIView):
         serializer = ClienteSerializer(cliente, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):

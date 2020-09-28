@@ -19,6 +19,14 @@ class EnderecoSerializer(serializers.ModelSerializer):
             'atualizado_em'
         ]
 
+    def validate(self, data):
+        cep = len(data['cep'])
+        if (cep < 8):
+            raise serializers.ValidationError({
+                "cep": "Certifique-se de que este campo não tenha menos de 8 caracteres."
+            })
+        return data
+
 # Campos Obrigatorios
 # nome, cpf, sexo, data_nasc, fone, estado_civil, filiação
 # status, credito, criado_por, endereço criado_em, atualizado_em, ativo
@@ -56,7 +64,7 @@ class ClienteSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         cpf = len(data['cpf'])
-        if (cpf != 11):
+        if (cpf < 11):
             raise serializers.ValidationError({
                 "cpf": "Certifique-se de que este campo não tenha menos de 11 caracteres."
             })
