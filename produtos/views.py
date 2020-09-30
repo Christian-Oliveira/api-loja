@@ -46,9 +46,19 @@ class ProdutoList(APIView):
     Recurso para listar e criar Produto
     """
     def get(self, request):
-        produtos = Produto.objects.all()
+        query = request.GET.get('search')
+        if (query):
+            produtosActive = Produto.objects.filter(ativo=True)
+            produtos = produtosActive.filter(
+                    categoria__nome__istartswith=query
+                )
+            if not(produtos):
+                return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            produtos = Produto.objects.filter(ativo=True)
+
         serializer = ProdutoSerializer(produtos, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
         serializer = ProdutoCreateSerializer(data=request.data)
