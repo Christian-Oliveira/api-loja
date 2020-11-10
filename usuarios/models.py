@@ -14,14 +14,12 @@ class Perfil(models.Model):
 
     VENDEDOR = 1
     CAIXA = 2
-    SUPERVISOR = 3
-    ADMIN = 4
+    ADMIN = 3
 
     #VENDEDOR, CAIXA, SUPERVISOR, ADMINISTRADOR
     TIPOS_USUARIOS = (
         (VENDEDOR, 'VENDEDOR'),
         (CAIXA, 'CAIXA'),
-        (SUPERVISOR, 'SUPERVISOR'),
         (ADMIN, 'ADMINISTRADOR'),
     )
 

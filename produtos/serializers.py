@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from faker import Faker
 
 from .models import Categoria, Marca, Produto
 
@@ -21,6 +22,7 @@ class ProdutoCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Produto
         fields = [
+            'codigo',
             'categoria',
             'marca',
             'descricao',
@@ -32,6 +34,22 @@ class ProdutoCreateSerializer(serializers.ModelSerializer):
             'tamanho'
         ]
 
+        read_only_fields = ['codigo']
+
+    def create(self, validated_data):
+        fake = Faker()
+        validated_data['codigo'] = None
+        while (validated_data['codigo'] is None):
+            codigo = fake.ean(length=8)
+            produtoIsExists = Produto.objects.filter(codigo=codigo)
+            if not(produtoIsExists.exists()):
+                validated_data['codigo'] = codigo
+
+        produto = Produto.objects.create(**validated_data)
+        return produto
+        
+        
+
 
 class ProdutoSerializer(serializers.ModelSerializer):
     categoria = serializers.StringRelatedField()
@@ -41,6 +59,7 @@ class ProdutoSerializer(serializers.ModelSerializer):
         model = Produto
         fields = [
             'id',
+            'codigo',
             'categoria',
             'marca',
             'descricao',
@@ -54,4 +73,4 @@ class ProdutoSerializer(serializers.ModelSerializer):
             'atualizado_em',
             'ativo'
         ]
-        read_only_fields = ['id', 'criado_em', 'atualizado_em']
+        read_only_fields = ['id', 'codigo', 'criado_em', 'atualizado_em']

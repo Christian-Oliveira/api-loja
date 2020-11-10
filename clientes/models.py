@@ -49,7 +49,6 @@ class Cliente(Base):
         (1, 'ATIVO'),
         (2, 'SPC'),
         (3, 'SUSPENSO'),
-        (4, 'IMPRESSO')
     )
 
     nome           = models.CharField(max_length=100)

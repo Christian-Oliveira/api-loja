@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
 from .models import Categoria, Marca, Produto
 from .serializers import CategoriaSerializer, MarcaSerializer, ProdutoSerializer, ProdutoCreateSerializer
@@ -46,9 +47,22 @@ class ProdutoList(APIView):
     Recurso para listar e criar Produto
     """
     def get(self, request):
-        produtos = Produto.objects.all()
-        serializer = ProdutoSerializer(produtos, many=True)
-        return Response(serializer.data)
+        codigo = request.GET.get('codigo', None)
+        descricao = request.GET.get('descricao', None)
+        produtosAtivos = Produto.objects.filter(ativo=True)
+
+        if (codigo is not None):
+            produtos = produtosAtivos.filter(codigo=codigo)
+        elif (descricao is not None):
+            produtos = produtosAtivos.filter(descricao__istartswith=descricao)
+        else:
+            produtos = produtosAtivos
+
+        if (produtos.exists()):
+            serializer = ProdutoSerializer(produtos, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
     def post(self, request):
         serializer = ProdutoCreateSerializer(data=request.data)
