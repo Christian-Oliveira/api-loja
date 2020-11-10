@@ -55,6 +55,7 @@ class Produto(Base):
         ("B", "BABY")
     )
 
+    codigo      = models.CharField(_("Código"), max_length=8, editable=False, unique=True, null=True)
     categoria   = models.ForeignKey(Categoria, related_name='categoria_produtos', on_delete=models.PROTECT)
     marca       = models.ForeignKey(Marca, related_name='marca_produtos', on_delete=models.PROTECT)
     descricao   = models.CharField(_("Descrição"), max_length=150)
@@ -71,3 +72,6 @@ class Produto(Base):
         
     def __str__(self):
         return self.descricao
+
+
+    
