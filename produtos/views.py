@@ -58,11 +58,8 @@ class ProdutoList(APIView):
         else:
             produtos = produtosAtivos
 
-        if (produtos.exists()):
-            serializer = ProdutoSerializer(produtos, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response(status=status.HTTP_204_NO_CONTENT)
+        serializer = ProdutoSerializer(produtos, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
         serializer = ProdutoCreateSerializer(data=request.data)
