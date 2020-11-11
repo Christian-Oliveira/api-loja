@@ -32,12 +32,13 @@ class Venda(Base):
         ("F", "FINALIZADO"),
     )
 
-    cliente         = models.ForeignKey(Cliente, related_name="compras", on_delete=models.PROTECT)
-    vendedor        = models.ForeignKey(User, related_name="vendas", on_delete=models.PROTECT)
+    cliente         = models.ForeignKey(Cliente, related_name="comprador", on_delete=models.PROTECT)
+    vendedor        = models.ForeignKey(User, related_name="vendedor", on_delete=models.PROTECT, null=True, blank=True)
+    caixa           = models.ForeignKey(User, related_name="caixa", on_delete=models.PROTECT)
     produtos        = models.ManyToManyField(Produto, through='ItemVenda')
-    valor_total     = models.DecimalField(_("Valor Total"), max_digits=10, decimal_places=2, null=True, blank=True)
+    valor_total     = models.DecimalField(_("Valor Total"), max_digits=10, decimal_places=2)
     desconto        = models.PositiveIntegerField(_("Desconto"), null=True, blank=True)
-    forma_pagamento = models.PositiveIntegerField(_("Forma de Pagamento"), choices=FORMA_PAGAMENTO, null=True, blank=True)
+    forma_pagamento = models.PositiveIntegerField(_("Forma de Pagamento"), choices=FORMA_PAGAMENTO)
     valor_pago      = models.DecimalField(_("Valor Pago"), max_digits=10, decimal_places=2, null=True, blank=True)
     qtd_parcelas    = models.PositiveIntegerField(_("Quantidade de Parcelas"), null=True, blank=True)
     valor_parcelas  = models.DecimalField(_("Valor das Parcelas"), max_digits=10, decimal_places=2, null=True, blank=True)
